@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="TestingSumo GitHub Repo API Automation">
-  <test thread-count="1" name="Test">
-    <classes>
-      
-    </classes>
-  </test> <!-- Test -->
-</suite> <!-- Suite -->
+<suite name="API Automation Verify Order">
+	<listeners>
+		<listener
+			class-name="com.testAutomation.utils.listeners.ListenerClass" />
+		<listener
+			class-name="com.testAutomation.utils.listeners.AnnotationTransformer" />
+	</listeners>
+
+	<test thread-count="3" name="Process Order from Ecom" parallel="methods">
+		<classes>
+			<class name="com.test.processOrder.ProcessOrderTest" />
+		</classes>
+	</test>
+</suite> 
