@@ -4,27 +4,27 @@ import com.codoid.products.fillo.Connection;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.testAutomation.constants.FrameworkConstants;
+import com.testAutomation.utils.report.Log;
 
 public class TestDataUtils {
 
-	private static Logger Log = LogManager.getLogger(TestDataUtils.class.getName());
+	static String propertyFilePath = FrameworkConstants.PROJECT_PATH + FrameworkConstants.PROPERTYFILE_PATH;
+	static String dataFilePath = FrameworkConstants.PROJECT_PATH + FrameworkConstants.TESTDATA_PATH;
 
-	static String dataFilePath = System.getProperty("user.dir") + "/resources/" + "TestData.xlsx";
-	static String propertyFilePath = System.getProperty("user.dir") + "/resources/" + "Global.properties";
-
-	public static String getTestData(String sheetname, String payload, String columnName) {
+	/**
+	 * Returns value from TestData.xlsx based on Cell and Column 
+	 * @param 	Sheetname, payloadRowValue, columnName  
+	 *			
+	 * @return a String
+	 */
+	public static String getTestData(String sheetname, String payloadRowValue, String columnName) {
 		String value = null;
 		try {
 
 			Fillo filObj = new Fillo();
-			Log.info("fillo filepath is:" + dataFilePath);
 			Connection connection = filObj.getConnection(dataFilePath);
-			String strQuery = "Select * from " + sheetname + " " + "where Payload='" + payload + "'";
+			String strQuery = "Select * from " + sheetname + " " + "where Payload='" + payloadRowValue + "'";
 			Recordset recordset = null;
 
 			recordset = connection.executeQuery(strQuery);
@@ -60,18 +60,4 @@ public class TestDataUtils {
 		}
 	}
 
-	public static String getGlobalValue(String key) {
-		Properties prop = new Properties();
-		try {
-
-			FileInputStream fis = new FileInputStream(propertyFilePath);
-			prop.load(fis);
-
-		} catch (Exception e) {
-			e.getMessage();
-			Log.error("unable to read property from global.properties");
-		}
-		return prop.getProperty(key);
-
-	}
 }
