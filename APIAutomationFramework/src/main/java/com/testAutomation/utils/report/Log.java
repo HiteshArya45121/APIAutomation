@@ -1,10 +1,10 @@
 package com.testAutomation.utils.report;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 public class Log {
 
-	private static Logger Log = Logger.getLogger(Log.class.getName());
+	private static Logger Log = LogManager.getLogger(Log.class);
 
 	public static void info(String message) {
 		Log.info(message);
