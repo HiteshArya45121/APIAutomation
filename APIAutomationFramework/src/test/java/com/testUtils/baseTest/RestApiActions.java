@@ -5,18 +5,21 @@ import static com.testUtils.baseTest.SpecBuilder.getResponseSpec;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.testng.Assert.assertEquals;
 
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.output.WriterOutputStream;
 
 import com.aventstack.extentreports.markuputils.CodeLanguage;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.testAutomation.enums.StatusCodes;
+import com.google.gson.JsonObject;
 import com.testAutomation.utils.report.ExtentLogger;
 
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -26,47 +29,51 @@ public class RestApiActions {
 	/**
 	 * POST method
 	 * 
-	 * @param resourcePath, accessToken , payLoad
+	 * @param baseURL, resourcePath, accessToken , payLoad
 	 * 
 	 * @return Response
 	 */
-	public static Response post(String resourcePath, String accessToken, String payLoad) {
+	public static Response POST(String baseURI, String resourcePath, String accessToken, String payLoad) {
 
 		StringWriter writerRequest;
 		PrintStream captor;
 		writerRequest = new StringWriter();
 		captor = new PrintStream(new WriterOutputStream(writerRequest), true);
 		// Example For Bearer Token
-		/* Response response =
-		 given(getRequestSpec()).header("Authorization",
-	              "Bearer " + accessToken).body(payLoad).auth().oauth2(accessToken)
-		 .filter(new RequestLoggingFilter(captor)).when() */
+		/*
+		 * Response response = given(getRequestSpec()).header("Authorization", "Bearer "
+		 * + accessToken).body(payLoad).auth().oauth2(accessToken) .filter(new
+		 * RequestLoggingFilter(captor)).when()
+		 */
 
-		Response response = given(getRequestSpec()).body(payLoad).auth().oauth2(accessToken)
+		Response response = given(getRequestSpec(baseURI)).body(payLoad).auth().oauth2(accessToken)
 				.filter(new RequestLoggingFilter(captor)).when().
 
-				post(resourcePath).then().spec(getResponseSpec()).extract().response();
+				post(resourcePath).then().spec(getResponseSpec(baseURI)).extract().response();
 
-		 printDetailsInExtentReport(writerRequest, response);
+		printDetailsInExtentReport(writerRequest, response);
 		return response;
 	}
 
 	/**
 	 * GET method
 	 * 
-	 * @param resourcePath, accessToken
+	 * @param baseURI, resourcePath, accessToken
 	 * 
 	 * @return Response
 	 */
-	public static Response get(String resourcePath, String accessToken) {
+	public static Response GET(String baseURI, String resourcePath, String accessToken) {
 
+		
 		StringWriter writerRequest;
 		PrintStream captor;
 		writerRequest = new StringWriter();
 		captor = new PrintStream(new WriterOutputStream(writerRequest), true);
-
-		Response response = given(getRequestSpec()).auth().oauth2(accessToken).filter(new RequestLoggingFilter(captor))
-				.when().get(resourcePath).then().spec(getResponseSpec()).extract().response();
+		Map<String, String> js = new HashMap<String, String>();
+		js.put("limit", "1");
+		Response response = given(getRequestSpec(baseURI)).auth().oauth2(accessToken)
+				.filter(new RequestLoggingFilter(captor)).when().get(resourcePath).then()
+				.extract().response();
 
 		printDetailsInExtentReport(writerRequest, response);
 		return response;
@@ -79,14 +86,14 @@ public class RestApiActions {
 	 * 
 	 * @return Response
 	 */
-	public static Response put(String resourcePath, String accessToken, Object payLoad) {
+	public static Response PUT(String baseURI, String resourcePath, String accessToken, Object payLoad) {
 
 		StringWriter writerRequest;
 		PrintStream captor;
 		writerRequest = new StringWriter();
 		captor = new PrintStream(new WriterOutputStream(writerRequest), true);
 
-		Response response = given(getRequestSpec()).body(payLoad).
+		Response response = given(getRequestSpec(baseURI)).body(payLoad).
 		// header("Authorization", "Bearer "+accessToken).
 				auth().oauth2(accessToken).filter(new RequestLoggingFilter(captor)).when().
 
@@ -110,16 +117,18 @@ public class RestApiActions {
 		JsonPath jpath = response.jsonPath();
 		return jpath.get(jsonPath);
 	}
-
+	
 	/**
-	 * Asserts the status code
+	 * Returns List of MAP 
 	 * 
-	 * @param actualStatusCode , StatusCodes, message
+	 * @param Response
 	 * 
-	 * @return a <T>
+	 * @return List<Map<String,Object>>
 	 */
-	public static void assertStatusCode(int actualStatusCode, int statusCode) {
-		assertThat(actualStatusCode, equalTo(statusCode));
+	public static  List<Map<String,Object>> getResponseAsList(Response response) {
+		 List<Map<String,Object>> responseBody = null;
+		 responseBody = response.as(new TypeRef<List<Map<String,Object>>>() {});
+		 return responseBody;
 	}
 
 	/**

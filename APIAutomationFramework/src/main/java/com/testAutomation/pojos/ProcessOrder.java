@@ -19,3 +19,5 @@ public class ProcessOrder {
 	private Boolean specialOrder;
 
 }
+
+

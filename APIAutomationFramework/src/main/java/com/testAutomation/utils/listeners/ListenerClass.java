@@ -66,6 +66,7 @@ public class ListenerClass implements ITestListener, ISuiteListener {
 		String logText = "<b>" + result.getMethod().getMethodName() + " is failed.</b>" + "  " + ICON_SMILEY_FAIL;
 		Markup markup_message = MarkupHelper.createLabel(logText, ExtentColor.RED);
 		ExtentLogger.fail(markup_message);
+		
 
 	}
 

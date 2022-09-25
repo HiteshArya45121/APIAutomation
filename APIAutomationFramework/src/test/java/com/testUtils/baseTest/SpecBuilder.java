@@ -1,6 +1,5 @@
 package com.testUtils.baseTest;
 
-import com.testAutomation.constants.FrameworkConstants;
 import com.testAutomation.payload.RequestPayloadProcessOrder;
 
 import io.restassured.builder.RequestSpecBuilder;
@@ -13,12 +12,12 @@ import io.restassured.specification.ResponseSpecification;
 public class SpecBuilder {
 	protected RequestPayloadProcessOrder RequestPayloadObj = new RequestPayloadProcessOrder();
 	
-	public static RequestSpecification getRequestSpec() {
-		return new RequestSpecBuilder().setBaseUri(FrameworkConstants.BASEURI_GET_USERS)
+	public static RequestSpecification getRequestSpec(String baseURI) {
+		return new RequestSpecBuilder().setBaseUri(baseURI)
 				.setContentType(ContentType.JSON).log(LogDetail.ALL).build();
 	}
 
-	public static ResponseSpecification getResponseSpec() {
+	public static ResponseSpecification getResponseSpec(String baseURI) {
 		return new ResponseSpecBuilder().expectContentType(ContentType.JSON).log(LogDetail.ALL).build();
 	}
 

@@ -8,7 +8,7 @@
 			class-name="com.testAutomation.utils.listeners.AnnotationTransformer" />
 	</listeners>
 
-	<test thread-count="3" name="Process Order from Ecom" parallel="methods">
+	<test thread-count="1" name="Process Order from Ecom" parallel="methods">
 		<classes>
 			<class name="com.test.processOrder.ProcessOrderTest" />
 		</classes>
